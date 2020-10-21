@@ -22,5 +22,3 @@ func (c *Customer) fallbackToSecondAcquirer() {
 func (c *Customer) logPaymentTransaction() {
 	//... logic here
 }
-
-ty
