@@ -15,7 +15,6 @@ type Config struct {
 }
 
 func main() {
-
 	config := Config{":8080", "cert.pem", "key.pem", 2 * time.Second, 5 * time.Second}
 	log.Println(NewServer(config))
 }
