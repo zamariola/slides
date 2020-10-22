@@ -90,13 +90,10 @@ func (s *Server) Serve(options ...func(*Server)) error {
 func main() {
 
 	sv, err := NewServer(":8080")
-	if err != nil {
-		panic(err)
-	}
 
 	log.Println(sv.Serve(
-		WithRoutes(),
 		WithTimeout(2*time.Second, 3*time.Second),
+		WithRoutes(),
 		WithCertificate("cert.pem", "key.pem"),
 	))
 }
