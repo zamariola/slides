@@ -43,6 +43,8 @@ func (s *Server) Serve() error {
 
 func main() {
 	sv, _ := NewServer(":8080")
+	//10 method calls (200 lines)
 	sv.setTimeout(2*time.Second, 3*time.Second)
+	//10 method calls (200 lines)
 	log.Println(sv.Serve())
 }
