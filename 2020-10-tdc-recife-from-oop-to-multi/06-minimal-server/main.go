@@ -2,32 +2,54 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
 	"time"
 )
 
-func main() {
-	log.Println(NewServer(":8080", "cert.pem", "key.pem", 2*time.Second, 5*time.Second))
+type Server struct {
+	Ltn          net.Listener //address + certificates
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+	Handler      http.Handler
 }
 
-func NewServer(
-	address string,
-	certPath string,
-	keyPath string,
-	readTimeout time.Duration,
-	writeTimeout time.Duration,
-) error {
-	r := http.NewServeMux()
+func NewServer(addr string) (*Server, error) {
 
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("My Web Server\n"))
-	})
+	dftLtn, err := net.Listen("tcp", addr)
+
+	return &Server{
+		Ltn:          dftLtn,
+		ReadTimeout:  3 * time.Second,
+		WriteTimeout: 5 * time.Second,
+	}, err
+}
+
+func (s *Server) setTimeout(read, write time.Duration) {
+	s.ReadTimeout = read
+	s.WriteTimeout = write
+}
+
+func (s *Server) Serve() error {
 
 	srv := &http.Server{
-		Addr:         address,
-		Handler:      r,
-		ReadTimeout:  readTimeout,
-		WriteTimeout: writeTimeout,
+		Handler:      s.Handler,
+		ReadTimeout:  s.ReadTimeout,
+		WriteTimeout: s.WriteTimeout,
 	}
-	return srv.ListenAndServeTLS(certPath, keyPath)
+
+	return srv.Serve(s.Ltn)
+}
+
+func main() {
+
+	sv, err := NewServer(":8080")
+
+	if err != nil {
+		panic(err)
+	}
+
+	sv.setTimeout(2*time.Second, 3*time.Second)
+
+	log.Println(sv.Serve())
 }

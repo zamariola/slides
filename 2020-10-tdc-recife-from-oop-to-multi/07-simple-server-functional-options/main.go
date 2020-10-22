@@ -55,7 +55,7 @@ func WithCertificate(cert, key string) func(*Server) {
 }
 
 type Server struct {
-	Ltn          net.Listener
+	Ltn          net.Listener //address + certificates
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 	Handler      http.Handler
