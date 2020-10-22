@@ -42,14 +42,7 @@ func (s *Server) Serve() error {
 }
 
 func main() {
-
-	sv, err := NewServer(":8080")
-
-	if err != nil {
-		panic(err)
-	}
-
+	sv, _ := NewServer(":8080")
 	sv.setTimeout(2*time.Second, 3*time.Second)
-
 	log.Println(sv.Serve())
 }
